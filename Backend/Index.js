@@ -1,6 +1,7 @@
 import express from "express"
 import mongoose from "mongoose";
 import "dotenv/config";
+import router from "./routes/user.route.js";
 const app=express();
 mongoose.connect( process.env.CONNECTION_URL)
 .then(()=>{
@@ -11,3 +12,4 @@ mongoose.connect( process.env.CONNECTION_URL)
 }).catch((error)=>{
     console.log(error.message)
 })
+app.use("/api",router);
