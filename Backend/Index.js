@@ -1,6 +1,13 @@
 import express from "express"
+import mongoose from "mongoose";
+import "dotenv/config";
 const app=express();
-
-app.listen(3000,()=>{
-    console.log(`server is running at 3000`)
+mongoose.connect( process.env.CONNECTION_URL)
+.then(()=>{
+    console.log("Database connected Successfully")
+    app.listen(process.env.PORT,()=>{
+        console.log(`App is running at port ${process.env.PORT}`)
+    })
+}).catch((error)=>{
+    console.log(error.message)
 })
