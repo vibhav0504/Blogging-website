@@ -1,7 +1,8 @@
 import express from "express"
 import mongoose from "mongoose";
 import "dotenv/config";
-import router from "./routes/user.route.js";
+import userRoute from "./routes/user.route.js";
+import authRoute from "./routes/auth.routes.js";
 const app=express();
 mongoose.connect( process.env.CONNECTION_URL)
 .then(()=>{
@@ -12,4 +13,6 @@ mongoose.connect( process.env.CONNECTION_URL)
 }).catch((error)=>{
     console.log(error.message)
 })
-app.use("/api",router);
+app.use(express.json());
+app.use("/api",userRoute);
+app.use("/api",authRoute);
