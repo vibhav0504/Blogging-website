@@ -1,31 +1,38 @@
 import User from "../Models/user.models.js";
-import bcryptjs from "bcryptjs"
-export const signup = async(req,res)=>{
+import ApiError from "../utils/ApiError.js";
+import ApiResponse from "../utils/ApiResponse.js";
+import asyncHandler from "../utils/asyncHandler.js"
+export const signup = asyncHandler( async(req,res)=>{
 const {userName,email,password}=req.body;
-// console.log(userName)
-// console.log(email)
-// console.log(password)
+console.log(userName)
+console.log(email)
+console.log(password)
 if ([userName,email,password].some((e) => e?.trim() === "")) {
-  res.send("All fields are required");
+  throw new ApiError(404, "All fields are required");
   }
 
-const userIsExisting = await User.findOne({ $or: [ { email }] });
+const userIsExisting = await User.findOne({ $or: [ {userName} ,{ email }] });
 if(userIsExisting){
-    console.log("user already registered")
-   return res.send("User Already Exist")
+throw  new ApiError(402,"User Already Exist")
 }
-
-const hashedPassword=bcryptjs.hashSync(password,10);
 const user = await User.create({
     email,
-    password:hashedPassword,
+    password,
     userName: userName.toLowerCase(),
   });
   const createdUser = await User.findById(user._id);
 
   if (!createdUser) {
-    res.send("Something went Wrong While registering");
+    new ApiError(500, "Something went Wrong While registering");
   }
-  return res.send("User Registered Successfully");
+  return res
+  .status(200)
+  .json(
+    new ApiResponse(
+      200,
+      createdUser,
+      "User Logged In SuccessFully"
+    )
+  );
 }
-
+)
