@@ -3,6 +3,7 @@ import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js"
 import bcrypt from "bcryptjs"
+import jwt from "jsonwebtoken"
 export const signup = asyncHandler( async(req,res)=>{
 const {userName,email,password}=req.body;
 // console.log(userName)
@@ -38,3 +39,28 @@ const user = await User.create({
   );
 }
 )
+ 
+export const signin=asyncHandler(async (req,res,next)=>{
+  const {  email , password }=req.body;
+  if(!email || ! password || !email==="" || !password===""  ){
+    throw new ApiError(400, "All Fields are required");
+  }
+  try {
+    const finduser=await User.findOne({email});
+    if(!finduser){
+    throw  new ApiError(404, "User Not Found");
+    }
+    const validPassword=bcrypt.compareSync(password,finduser.password);
+    if(!validPassword){
+     throw new ApiError(400, "Invalid Password");
+    }
+    const token=jwt.sign(
+      {id:finduser._id},process.env.JWT_SECRET)
+
+      const {password:pass ,...rest}=finduser._doc;
+      res.status(200).cookie("access_token",token,{
+        httpOnly:true}).json(rest);
+  } catch (error) {
+    next(error);
+  }
+})
