@@ -6,7 +6,7 @@ import authRoute from "./routes/auth.routes.js";
 const app=express();
 mongoose.connect( process.env.CONNECTION_URL)
 .then(()=>{
-    console.log("Database connected Successfully")
+        console.log("Database connected Successfully")
     app.listen(process.env.PORT,()=>{
         console.log(`App is running at port ${process.env.PORT}`)
     })
@@ -16,3 +16,13 @@ mongoose.connect( process.env.CONNECTION_URL)
 app.use(express.json());
 app.use("/api",userRoute);
 app.use("/api",authRoute);
+
+app.use((err,req,res,next)=>{
+    const statusCode=err.statusCode||500;
+    const message=err.message||"Internal server error"
+    res.status(statusCode).json({
+        success:false,
+        statusCode,
+        message,
+    })
+})

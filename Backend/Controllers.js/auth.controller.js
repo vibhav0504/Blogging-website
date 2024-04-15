@@ -1,21 +1,19 @@
 import User from "../Models/user.models.js";
-import ApiError from "../utils/ApiError.js";
-import ApiResponse from "../utils/ApiResponse.js";
-import asyncHandler from "../utils/asyncHandler.js"
+import { errorHandler } from "../utils/error.js";
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
-export const signup = asyncHandler( async(req,res)=>{
+export const signup = async(req,res,next)=>{
 const {userName,email,password}=req.body;
 // console.log(userName)
 // console.log(email)
 // console.log(password)
 if ([userName,email,password].some((e) => e?.trim() === "")) {
-  throw new ApiError(404, "All fields are required");
+  next (errorHandler(400, "All fields are required"));
   }
 
 const userIsExisting = await User.findOne({ $or: [ {userName} ,{ email }] });
 if(userIsExisting){
-throw  new ApiError(402,"User Already Exists ")
+  next (errorHandler(402,"User Already Exists "))
 }
 const hashedPassword = await bcrypt.hash(password, 10);
 const user = await User.create({
@@ -26,7 +24,7 @@ const user = await User.create({
   const createdUser = await User.findById(user._id);
 
   if (!createdUser) {
-    new ApiError(500, "Something went Wrong While registering");
+    next (errorHandler(500, "Something went Wrong While registering"));
   }
   return res
   .status(200)
@@ -38,21 +36,21 @@ const user = await User.create({
     )
   );
 }
-)
+
  
-export const signin=asyncHandler(async (req,res,next)=>{
+export const signin=async (req,res,next)=>{
   const {  email , password }=req.body;
   if(!email || ! password || !email==="" || !password===""  ){
-    throw new ApiError(400, "All Fields are required");
+    return   next (errorHandler(400, "All Fields are required"));
   }
   try {
     const finduser=await User.findOne({email});
     if(!finduser){
-    throw  new ApiError(404, "User Not Found");
+      return   next (errorHandler(404, "User Not Found"));
     }
     const validPassword=bcrypt.compareSync(password,finduser.password);
     if(!validPassword){
-     throw new ApiError(400, "Invalid Password");
+      return   next (errorHandler(400, "Invalid Password"));
     }
     const token=jwt.sign(
       {id:finduser._id},process.env.JWT_SECRET)
@@ -63,4 +61,4 @@ export const signin=asyncHandler(async (req,res,next)=>{
   } catch (error) {
     next(error);
   }
-})
+}
