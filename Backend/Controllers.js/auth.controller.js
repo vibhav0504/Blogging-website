@@ -13,31 +13,20 @@ if ([userName,email,password].some((e) => e?.trim() === "")) {
 
 const userIsExisting = await User.findOne({ $or: [ {userName} ,{ email }] });
 if(userIsExisting){
-  next (errorHandler(402,"User Already Exists "))
+ return next (errorHandler(402,"User Already Exists "))
 }
 const hashedPassword = await bcrypt.hash(password, 10);
 const user = await User.create({
-  userName,
+    userName,
     email,
     password:hashedPassword,
   });
   const createdUser = await User.findById(user._id);
-
   if (!createdUser) {
-    next (errorHandler(500, "Something went Wrong While registering"));
+  return  next (errorHandler(500, "Something went Wrong While registering"));
   }
-  return res
-  .status(200)
-  .json(
-    new ApiResponse(
-      200,
-      createdUser,
-      "User Logged In SuccessFully"
-    )
-  );
-}
-
- 
+  return res.json(" User Logged In SuccessFully ");
+} 
 export const signin=async (req,res,next)=>{
   const {  email , password }=req.body;
   if(!email || ! password || !email==="" || !password===""  ){
