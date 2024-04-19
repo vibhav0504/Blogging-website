@@ -16,7 +16,6 @@ const FooterComponent = () => {
             </div>
             <div className="grid grid-cols-2 gap-8 mt-4 sm:grid-cols-3 sm:gap-6">
             <div>
-
                 <Footer.Title title='About'/>
                 <Footer.LinkGroup col>
                     <Footer.Link href='https://www.instagram.com' target='blank'
