@@ -3,7 +3,6 @@ import {Link ,  useNavigate } from "react-router-dom"
 import { Label, TextInput , Button, Alert, Spinner } from "flowbite-react"
 import { signInStart,signInSucess,signInFailure } from '../redux/User/userSlice'
 import { useDispatch , useSelector } from 'react-redux'
-import OAuth from '../Component/OAuth'
 const Signin =() => {
   const navigate=useNavigate();
   const dispatch=useDispatch();
@@ -66,8 +65,7 @@ const handleSubmit=async(e)=>{
        <Spinner size='sm'/>
        <span>Loading..</span>
        </>
-       ):"Sign-In"}</Button>
-       <OAuth/> 
+       ):"Sign-In"}</Button> 
       </form>
       <div className='flex gap-2 text-sm mt-5'>
         <span > Don't Have an account?</span>
