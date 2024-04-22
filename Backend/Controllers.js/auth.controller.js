@@ -57,7 +57,6 @@ export const authenticate= async (req,res,next)=>{
    const user=await User.findOne({email});
    if(user){
     const token=jwt.sign({id:user._id},process.env.JWT_SECRET);
-    console.log(user._doc);
     const { password,...rest}=user._doc;
     res.status(200).cookie('access_token',token,{
      httpOnly:true,
