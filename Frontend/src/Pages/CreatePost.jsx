@@ -11,11 +11,15 @@ import {
 import { app } from "../firebase";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { useNavigate } from "react-router-dom";
 const CreatePost = () => {
+  const navigate=useNavigate();
   const [imageUploadProgress, setImageUploadProgress] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(null);
   const [formData, setFormData] = useState({});
   const [file, setFile] = useState(null);
+  const[publishError,setPublishError]=useState(null);
+  console.log(formData)
   const handleUploadImage = async () => {
     try {
       if (!file) {
@@ -26,7 +30,7 @@ const CreatePost = () => {
       const storage = getStorage(app);
       const fileName = new Date().getTime() + "-" + file.name;
       const storageRef = ref(storage, fileName);
-      const uploadTask = uploadBytesResumable(storageRef, file);
+      const uploadTask =  uploadBytesResumable(storageRef, file);
       uploadTask.on(
         "state_changed",
         (snapshot) => {
@@ -52,12 +56,38 @@ const CreatePost = () => {
       console.log(error);
     }
   };
+   const handleSubmit=async(e)=>{
+     e.preventDefault();
+try {
+  const res=await fetch("/api/create",{
+    method:"POST",
+    headers:{
+      'Content-Type':"application/json"
+    },
+    body:JSON.stringify(formData),
+  })
+  const data=await res.json();
+  if(!res.ok){
+    setPublishError(data.message);
+    return;
+  }
+  if(res.ok){
+    setPublishError(null);
+    navigate(`create-post/post/${data.slug}`)
+  }
+  else{
+    setPublishError("Something went wrong")
+  }
+} catch (error) {
+  
+}
+   }
   return (
     <div className="max-w-3xl p-3 mx-auto min-h-screen">
       <h1 className="text-center text-3xl  my-7 font-semibold">
         Create a post
       </h1>
-      <form className=" flex flex-col gap-4 ">
+      <form className=" flex flex-col gap-4 " onSubmit={handleSubmit}>
         <div className="flex flex-col gap-4 sm:flex-row justify-between">
           <TextInput
             type="text"
@@ -65,8 +95,9 @@ const CreatePost = () => {
             required
             id="title"
             className="flex-1"
+            onChange={(e)=>setFormData({...formData,title:e.target.value})}
           />
-          <Select>
+          <Select onChange={(e)=>setFormData({...formData,category:e.target.value})}>
             <option value="uncategorized">Select a Category </option>
             <option value="new Gadgets">new Gadgets </option>
             <option value="Javascipt">Javascript </option>
@@ -117,10 +148,12 @@ const CreatePost = () => {
           placeholder="Write Something..."
           className="h-72 mb-12"
           required
+          onChange={(value)=>setFormData({...formData,content:value})}
         />
         <Button type="submit" gradientDuoTone="purpleToPink">
           Publish
         </Button>
+        {publishError && <Alert className="mt-5" color='failure'>{publishError}</Alert>}
       </form>
     </div>
   );
