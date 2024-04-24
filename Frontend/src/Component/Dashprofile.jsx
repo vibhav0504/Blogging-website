@@ -21,7 +21,7 @@ import {
   signOutSuccess,
 } from "../redux/User/userSlice";
 import { useDispatch } from "react-redux";
-
+import {Link} from "react-router-dom"
 const Dashprofile = () => {
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
@@ -32,7 +32,7 @@ const Dashprofile = () => {
   const [formData, setFormData] = useState({});
   const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch();
-  const { currentUser , error } = useSelector((state) => state.user);
+  const { currentUser , error ,loading } = useSelector((state) => state.user);
   useEffect(() => {
     if (imageFile) {
       uploadImage();
@@ -219,9 +219,15 @@ const Dashprofile = () => {
           id="password"
           onChange={handleChange}
         />
-        <Button type="submit" gradientDuoTone="purpleToBlue" outline>
-          Update
+        <Button type="submit" gradientDuoTone="purpleToBlue" outline disabled={loading}>
+         {loading?'Loading...':' Update'}
         </Button>
+{currentUser.isAdmin && (
+ <Link to={"/create-post"}>
+ <Button type="button" gradientDuoTone='purpleToPink' className="w-full">Create a post</Button>
+ </Link>
+)}
+
       </form>
       <div className="text-white flex justify-between mt-5">
         <span
