@@ -120,12 +120,13 @@ const Dashprofile = () => {
       // console.log(res);
       const data = await res.json();
       if (!res.ok) {
-        console.log(1);
+        // console.log(1);
         dispatch(deleteUserFailure(data.message));
       } else {
         dispatch(deleteUserSuccess(data));
       }
     } catch (error) {
+     
       dispatch(deleteUserFailure(error.message));
     }
   };
@@ -134,10 +135,10 @@ const Dashprofile = () => {
       const res = await fetch("/api/signout", {
         method: "POST",
       });
-      console.log(res);
+    
       const data = await res.json();
       if (!res.ok) {
-        console.log(1);
+     
         console.log(data.message);
       } else {
         dispatch(signOutSuccess());

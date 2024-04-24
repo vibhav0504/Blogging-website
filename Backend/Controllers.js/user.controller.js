@@ -54,7 +54,6 @@ export const deleteUser=async(req,res,next)=>{
             return next(errorHandler (403 ,"You are not authorized to delete this account" ));
         }
         try {
-            console.log(req.user.id)
            const deletedUser= await User.findByIdAndDelete(req.params.userId);
             res.status(200).json("User deleted Successfully")
         } catch (error) {
