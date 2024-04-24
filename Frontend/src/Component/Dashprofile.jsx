@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, Button, TextInput } from "flowbite-react";
+import { Alert, Button, TextInput, Modal } from "flowbite-react";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 import {
   getStorage,
   getDownloadURL,
@@ -10,25 +11,34 @@ import {
 import { app } from "../firebase";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { updateFailure , updateStart , updateSuccess } from "../redux/User/userSlice";
+import {
+  updateFailure,
+  updateStart,
+  updateSuccess,
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserFailure,
+  signOutSuccess,
+} from "../redux/User/userSlice";
 import { useDispatch } from "react-redux";
+
 const Dashprofile = () => {
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileUpLoadProgress, setImageFileUpLoadProgress] = useState(null);
   const [imageFileUpLoadError, setImageFileUpLoadError] = useState(null);
+  const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
+  const [updateUserError, setUpdateUserError] = useState(null);
   const [formData, setFormData] = useState({});
-const dispatch=useDispatch();
-  // console.log(imageFileUpLoadProgress, imageFileUpLoadError)
-  const filePicker = useRef();
-  const { currentUser } = useSelector((state) => state.user);
-  // console.log(imageFile , imageFileUrl);
+  const [showModal, setShowModal] = useState(false);
+  const dispatch = useDispatch();
+  const { currentUser , error } = useSelector((state) => state.user);
   useEffect(() => {
     if (imageFile) {
       uploadImage();
     }
   }, [imageFile]);
-
+  const filePicker = useRef();
   const uploadImage = async () => {
     setImageFileUpLoadError(null);
     const storage = getStorage(app);
@@ -58,6 +68,7 @@ const dispatch=useDispatch();
       }
     );
   };
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -65,36 +76,77 @@ const dispatch=useDispatch();
       setImageFileUrl(URL.createObjectURL(file));
     }
   };
-  const handleChange=(e)=>{
-    setFormData({...formData ,[e.target.id]:e.target.value })
-    console.log(formData)
-  }
-  const handleSubmit= async(e)=>{
-e.preventDefault();
-if(Object.keys(formData).length===0){
-  return ; 
-}
-try {
-  dispatch(updateStart());
-  const res=await await fetch(`/api/update/${currentUser._id}`,{
-    method:"PUT",
-    headers:{
-      'Content-Type':'application/json',
-    },
-body:JSON.stringify(formData)
-  })
-  const data=await res.json();
-  if(!res.ok){
-    dispatch(updateFailure(data.message))
-  }
-  else{
-    dispatch(updateSuccess(data))
-  
-  }
-} catch (error) {
-  dispatch(updateFailure(error.message))
-}
-  }
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+    console.log(formData);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (Object.keys(formData).length === 0) {
+      setUpdateUserError("No any change found");
+      return;
+    }
+    try {
+      dispatch(updateStart());
+      const res = await fetch(`/api/update/${currentUser._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        dispatch(updateFailure(data.message));
+        setUpdateUserError(data.message);
+      } else {
+        dispatch(updateSuccess(data));
+        setUpdateUserError(null);
+        setUpdateUserSuccess("User updated Successfully");
+      }
+    } catch (error) {
+      dispatch(updateFailure(error.message));
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    setShowModal(false);
+    try {
+      // console.log(currentUser._id)
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      // console.log(res);
+      const data = await res.json();
+      if (!res.ok) {
+        console.log(1);
+        dispatch(deleteUserFailure(data.message));
+      } else {
+        dispatch(deleteUserSuccess(data));
+      }
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  };
+  const handleSignOut = async () => {
+    try {
+      const res = await fetch("/api/signout", {
+        method: "POST",
+      });
+      console.log(res);
+      const data = await res.json();
+      if (!res.ok) {
+        console.log(1);
+        console.log(data.message);
+      } else {
+        dispatch(signOutSuccess());
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="w-full max-w-lg mx-auto p-3">
       <h1 className="my-7 font-semibold text-3xl text-center"> Profile</h1>
@@ -170,14 +222,57 @@ body:JSON.stringify(formData)
           Update
         </Button>
       </form>
-      <div className="text-pink-700 flex justify-between mt-5">
-        <span className="cursor-pointer bg-blue-300 p-3 rounded-full">
+      <div className="text-white flex justify-between mt-5">
+        <span
+          onClick={() => setShowModal(true)}
+          className="cursor-pointer bg-blue-300 p-3 rounded-full"
+        >
           Delete Account
         </span>
-        <span className=" text-pink-700 cursor-pointer bg-blue-300 p-3 rounded-full">
+        <span
+          className=" text-white cursor-pointer bg-blue-300 p-3 rounded-full"
+          onClick={handleSignOut}
+        >
           Sign Out
         </span>
       </div>
+      {updateUserSuccess && (
+        <Alert className="mt-5" color="success">
+          {updateUserSuccess}
+        </Alert>
+      )}
+      {updateUserError && (
+        <Alert className="mt-5" color="failure">
+          {updateUserError}
+        </Alert>
+      )}
+      {
+    error && <Alert className="mt-5" color='failure'>{error}</Alert>
+  }
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        popup
+        size="md"
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto" />
+            <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
+              Are you sure you want to delete this post?
+            </h3>
+            <div className="flex justify-center gap-4">
+              <Button color="failure" onClick={handleDeleteUser}>
+                Yes, I'm sure
+              </Button>
+              <Button color="gray" onClick={() => setShowModal(false)}>
+                No, cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

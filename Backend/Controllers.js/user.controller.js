@@ -49,4 +49,23 @@ export const updateUser=async(req,res,next)=>{
         }
     }
 
+export const deleteUser=async(req,res,next)=>{
+        if(req.user.id!==req.params.userId){
+            return next(errorHandler (403 ,"You are not authorized to delete this account" ));
+        }
+        try {
+            console.log(req.user.id)
+           const deletedUser= await User.findByIdAndDelete(req.params.userId);
+            res.status(200).json("User deleted Successfully")
+        } catch (error) {
+            next(error)
+        }
+    }
 
+export const signout=async(req,res,next)=>{
+try {
+res.clearCookie("access_token").status(200).json("User has been signed out")
+} catch (error) {
+    next(error)
+}
+}
