@@ -27,9 +27,10 @@ export const create = async (req, res, next) => {
 
 export const getPosts = async (req, res, next) => {
   try {
-    const startIndex = parseFloat(req.query.startIndex) || 0;
-    const limit = parseFloat(req.query.limit) || 9;
-    const sortDirection = req.query.order === "asc" ? 1 : -1;
+    console.log(1);
+    const startIndex = parseInt(req.query.startIndex)||0;
+    const limit = parseInt(req.query.limit)||9;
+    const sortDirection = req.query.order==="asc"?1:-1;
     const posts = await Post.find({
       ...(req.query.userId && { userId: req.query.userId }),
       ...(req.query.category && { category: req.query.category }),
@@ -37,15 +38,14 @@ export const getPosts = async (req, res, next) => {
       ...(req.query.postId && { _id: req.query.postId }),
       ...(req.query.searchTerm && {
         $or: [
-          { title: { $regex: req.query.searchTerm, $options: "i" } },
-          { content: { $regex: req.query.searchTerm, $options: "i" } },
+          { title: { $regex:req.query.searchTerm, $options: "i" } },
+          { content: { $regex:req.query.searchTerm, $options: "i" } },
         ],
       }),
-    })
-      .sort({ updatedAt: sortDirection })
+    }).sort({ updatedAt: sortDirection })
       .skip(startIndex)
-      .limit(limit)
-
+      .limit(limit);
+console.log(2);
     const totalPosts = await Post.countDocuments();
     const now=new Date();
     const oneMonthAgo=new Date(
@@ -54,9 +54,9 @@ export const getPosts = async (req, res, next) => {
         now.getDate()
     );
     const lastMonthPosts=await Post.countDocuments({
-        createdAt:{$gte:one}
+        createdAt:{$gte:oneMonthAgo}
     })
-    res.status(200).json({posts,totalPosts,oneMonthAgo})
+    res.status(200).json({posts,totalPosts,lastMonthPosts})
   } catch (error) {
     next(error);
   }
