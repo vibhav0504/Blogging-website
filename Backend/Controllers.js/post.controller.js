@@ -26,8 +26,9 @@ export const create = async (req, res, next) => {
 };
 
 export const getPosts = async (req, res, next) => {
+
   try {
-    console.log(1);
+  
     const startIndex = parseInt(req.query.startIndex)||0;
     const limit = parseInt(req.query.limit)||9;
     const sortDirection = req.query.order==="asc"?1:-1;
@@ -45,7 +46,6 @@ export const getPosts = async (req, res, next) => {
     }).sort({ updatedAt: sortDirection })
       .skip(startIndex)
       .limit(limit);
-console.log(2);
     const totalPosts = await Post.countDocuments();
     const now=new Date();
     const oneMonthAgo=new Date(
@@ -61,3 +61,15 @@ console.log(2);
     next(error);
   }
 };
+ 
+export const deletePost=async(req,res,next)=>{
+if(!req.user.isAdmin ||req.user.id!==req.params.userId){
+  return next(errorHandler(403,"Not authorize to delete this post"))
+}
+try {
+  await Post.findByIdAndDelete(req.params.postId);
+  res.status(200).json("Post deleted successfully")
+} catch (error) {
+  next(error);
+}
+}
