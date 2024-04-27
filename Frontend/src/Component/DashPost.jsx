@@ -17,7 +17,7 @@ try {
     const data=await res.json();
    if(res.ok){
     setUserPost(data.posts)
-    if(data.length<9){
+    if(data.posts.length<9){
       setShowMore(false);
     }
    }
@@ -39,6 +39,7 @@ try {
     setUserPost((prev)=>[...prev,...data.posts])
     if(data.posts.length<9){
       setShowMore(false);
+      
     }
   }
 } catch (error) {
