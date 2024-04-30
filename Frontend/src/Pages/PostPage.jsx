@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Spinner , Button } from "flowbite-react";
+import CommentSection from "../Component/CommentSection";
 const PostPage = () => {
   const { postSlug } = useParams();
   const [loading, setLoading] = useState(true);
@@ -8,6 +9,7 @@ const PostPage = () => {
   const [post, setPost] = useState(null);
   console.log(post);
   useEffect(() => {
+    
     const fetchPost = async () => {
       try {
         setLoading(true);
@@ -49,7 +51,8 @@ const PostPage = () => {
         <span className="italic">{(post?.content.length/1000).toFixed(0)}mins</span>
       </div>
       <div className="p-3 max-w-2xl mx-auto w-full post-content" dangerouslySetInnerHTML={{ __html: post?.content }}></div>
-
+      <CommentSection postId={post?._id}/>
+      {}
     </main>
   );
 };
