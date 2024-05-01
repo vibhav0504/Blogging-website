@@ -83,14 +83,12 @@ try {
     return rest;
     })
     const totalUsers=await User.countDocuments();
-   
     const now=new Date();
     const oneMonthAgo=new Date(
         now.getFullYear(),
         now.getMonth(),
         now.getDate()
     );
-    
     const lastMonthUsers = await User.countDocuments({
         createdAt: { $gte: oneMonthAgo },
       });
@@ -104,4 +102,17 @@ res.status(200).json({
 } catch (error) {
     next(error);
 }
+}
+
+export const getAllUser=async(req,res,next)=>{
+    try {
+         const user = await User.findById(req.params.userId);
+    if (!user) {
+      return next(errorHandler(404, 'User not found'));
+    }
+    const { password, ...rest } = user._doc;
+        res.status(200).json(rest)
+    } catch (error) {
+        next(error);
+    }
 }

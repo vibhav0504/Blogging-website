@@ -24,11 +24,8 @@ export const create = async (req, res, next) => {
     next(error);
   }
 };
-
-export const getPosts = async (req, res, next) => {
-
+export const getPosts = async(req, res, next) => {
   try {
-  
     const startIndex = parseInt(req.query.startIndex)||0;
     const limit = parseInt(req.query.limit)||9;
     const sortDirection = req.query.order==="asc"?1:-1;
@@ -58,6 +55,7 @@ export const getPosts = async (req, res, next) => {
     })
     res.status(200).json({posts,totalPosts,lastMonthPosts})
   } catch (error) {
+    console.log(error.message)
     next(error);
   }
 };

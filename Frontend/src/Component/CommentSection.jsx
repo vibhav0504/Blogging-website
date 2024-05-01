@@ -1,12 +1,31 @@
 import { Alert, Button, Textarea } from "flowbite-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import Comment from "./Comment";
 const CommentSection = ({ postId }) => {
   const { currentUser } = useSelector((state) => state.user);
   const [comment, setComment] = useState("");
   const [commentError, setCommentError] = useState(null);
-  const handleSubmit = async (e) => {
+   const[comments,setComments]=useState([]);
+// console.log(comments);
+   useEffect(()=>{
+      const getComment=async()=>{
+        try {
+          const res=await fetch(`/api/getcomments/${postId}`);
+          if(res.ok){
+            const data=await res.json();
+            setComments(data);
+          }
+        } catch (error) {
+          console.log(error.message)
+        }
+       
+      }
+      getComment();
+   },[postId])
+
+ const handleSubmit = async (e) => {
     e.preventDefault();
     if (comment.length > 200) {
       return;
@@ -26,7 +45,8 @@ const CommentSection = ({ postId }) => {
      const data = await res.json();
      if (res.ok) {
        setComment("");
-       setCommentError(null)
+       setCommentError(null);
+       setComments([data,...comments])
      }
      else{
       setCommentError(data.message)
@@ -84,6 +104,21 @@ const CommentSection = ({ postId }) => {
           </div>
         {commentError && <Alert color='failure' className="mt-5">{commentError}</Alert>}
         </form>
+      )}
+      {comments.length===0 ? (
+        <p className="text-sm my-5">No Comments yet!</p>
+      ):(
+       <>
+       <div className="text-sm my-5 flex items-center gap-1">
+          <p>Comments</p>
+          <div className= " border border-gray-400 py-1 px-2 rounded-sm">
+            {comments.length}
+          </div>
+        </div>
+        {comments.map((com)=>{
+          return <Comment key={com._id} comment={com} />
+        })}
+       </>
       )}
     </div>
   );
