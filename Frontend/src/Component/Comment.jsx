@@ -12,6 +12,7 @@ const Comment = ({ comment, onLike, onEdit, onDelete }) => {
     const getUser = async () => {
       try {
         const res = await fetch(`/api/user/${comment?.userId}`);
+        console.log(res)
         const data = await res.json();
         if (res.ok) {
           setUser(data);
