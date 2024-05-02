@@ -24,8 +24,8 @@ app.use("/api",postRoute);
 app.use("/api",commentRoute);
 
 app.use((err,req,res,next)=>{
-    const statusCode=err.statusCode||500;
-    const message=err.message||"Internal server error"
+    const statusCode=err.statusCode || 500;
+    const message = err.message|| "Internal server error"
     res.status(statusCode).json({
         success:false,
         statusCode,

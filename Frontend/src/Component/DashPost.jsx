@@ -13,7 +13,7 @@ const DashPost = () => {
   useEffect(()=>{
 const fetchPosts=async()=>{
 try {
-    const res=await fetch (`api/getposts?userId=${currentUser._id}`)
+    const res=await fetch (`/api/getposts?userId=${currentUser._id}`)
     const data=await res.json();
    if(res.ok){
     setUserPost(data.posts)
@@ -38,8 +38,7 @@ try {
   if(res.ok){
     setUserPost((prev)=>[...prev,...data.posts])
     if(data.posts.length<9){
-      setShowMore(false);
-      
+      setShowMore(false);  
     }
   }
 } catch (error) {
@@ -106,7 +105,7 @@ return (
 )
 })}
 </Table>
-{showMore && (<Button onClick={handleShowMore} className='w-full text-teal-500 self-center bg-white hover:bg-red-300 text-sm py-7'>Show More</Button>)}
+{showMore && (<Button onClick={handleShowMore}  className='w-full self-center my-1 text-gray p-1 hover:underline ' color='gray'>Show More</Button>)}
 </>
      ) : (
     <p>You have no posts yet !</p>

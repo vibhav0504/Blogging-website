@@ -88,18 +88,12 @@ const UpdatePost = () => {
         },
         body: JSON.stringify(formData),
       });
-      console.log(response);
-      console.log(response.ok);
       const info=await response.json();
-      console.log(info);
-
     if (!response.ok) {
         setPublishError(info.message);
         return;
       }
-    
         setPublishError(null);
-        console.log("success")
         navigate(`/post/${info.slug}`);
       
     } catch (error) {

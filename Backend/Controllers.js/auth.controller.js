@@ -4,9 +4,6 @@ import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 export const signup = async(req,res,next)=>{
 const {userName,email,password}=req.body;
-// console.log(userName)
-// console.log(email)
-// console.log(password)
 if ([userName,email,password].some((e) => e?.trim() === "")) {
   next (errorHandler(400, "All fields are required"));
   }
@@ -15,7 +12,7 @@ const userIsExisting = await User.findOne({ $or: [ {userName} ,{ email }] });
 if(userIsExisting){
  return next (errorHandler(402,"User Already Exists "))
 }
-const hashedPassword = await bcrypt.hash(password, 10);
+const hashedPassword = await bcrypt.hashSync(password, 10);
 const user = await User.create({
     userName,
     email,
@@ -44,7 +41,7 @@ export const signin=async (req,res,next)=>{
     const token=jwt.sign(
       {id:finduser._id , isAdmin:finduser.isAdmin},process.env.JWT_SECRET)
 
-      const {password:pass ,...rest}=finduser._doc;
+      const { password:pass ,...rest}=finduser._doc;
       res.status(200).cookie("access_token",token,{
         httpOnly:true}).json(rest);
   } catch (error) {
