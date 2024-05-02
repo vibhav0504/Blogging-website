@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import moment from "moment";
-import { Button } from "flowbite-react";
 import { FaThumbsUp } from "react-icons/fa";
 import { useSelector } from "react-redux";
 const Comment = ({ comment, onLike }) => {
@@ -9,8 +8,9 @@ const Comment = ({ comment, onLike }) => {
   useEffect(() => {
     const getUser = async () => {
       try {
+        console.log(comment?.userId);
         const res = await fetch(`/api/user/${comment?.userId}`);
-        // console.log(res);
+        console.log(res);
         const data = await res.json();
         if (res.ok) {
           setUser(data);
@@ -21,19 +21,19 @@ const Comment = ({ comment, onLike }) => {
     };
     getUser();
   }, [comment]);
-  return (
+  return !user? "No any comment":(
     <div className="flex p-4 border-b dark:border-gray-600 text-sm">
       <div className="flex-shrink-0 mr-3">
         <img
           className="w-10 h-10 rounded-full bg-gray-200"
-          src={user.profilePicture}
-          alt={user.userName}
+          src={user?.profilePicture}
+          alt={user?.userName}
         />
       </div>
       <div className="flex-1">
         <div className="flex items-center mb-1">
           <span className="font-bold mr-1 text-sm truncate">
-            {user ? `@${user.userName}` : "anonymous user"}
+            {user ? `@${user?.userName}` : "anonymous user"}
           </span>
           <span className="text-gray-500 text-sm">
             {moment(comment?.createdAt).fromNow()}
@@ -44,7 +44,7 @@ const Comment = ({ comment, onLike }) => {
           <button
             className={`text-gray-400 hover:text-blue-500 ${
               currentUser &&
-              comment?.likes.includes(currentUser._id) &&
+              comment?.likes.includes(currentUser?._id) &&
               "!text-blue-500"
             }`}
             type="button"

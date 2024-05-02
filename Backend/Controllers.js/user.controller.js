@@ -107,7 +107,9 @@ res.status(200).json({
 
 export const getAllUser=async(req,res,next)=>{
     try {
+        console.log(11)
         const user = await User.findById(req.params.userId);
+        console.log(user)
         if (!user) {
             return next(errorHandler(404, 'User not found'));
         }

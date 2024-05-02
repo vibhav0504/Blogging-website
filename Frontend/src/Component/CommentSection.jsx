@@ -39,7 +39,7 @@ const CommentSection = ({ postId }) => {
         body: JSON.stringify({
           content: comment,
           postId,
-          userId: currentUser._id,
+          userId: currentUser?._id,
         }),
       });
       const data = await res.json();
@@ -61,24 +61,25 @@ const CommentSection = ({ postId }) => {
         navigate("/sign-in");
         return;
       }
-      const res=await fetch(`/api/likecomment/${commentId}`,{
-        method:"PUT",
-      })
-      if(res.ok){
-const data=await res.json();
-setComments(comments.map((comment)=>{
-    comment._id === commentId
+      const res = await fetch(`/api/likecomment/${commentId}`, {
+        method: "PUT",
+      });
+      console.log(res);
+      if (res.ok) {
+        const data = await res.json();
+        setComments(
+          comments.map((comment)=>comment._id === commentId
               ? {
                   ...comment,
                   likes: data.likes,
                   numberOfLikes: data.likes.length,
                 }
               : comment
-  
-}))
+          )
+        );
       }
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
     }
   };
   return (
@@ -144,9 +145,9 @@ setComments(comments.map((comment)=>{
               {comments.length}
             </div>
           </div>
-          {comments.map((com) => {
-            return <Comment key={com?._id} comment={com} onLike={handleLike} />;
-          })}
+          {comments.map((comment) => (
+            <Comment key={comment?._id} comment={comment} onLike={handleLike} />
+          ))}
         </>
       )}
     </div>
