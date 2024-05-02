@@ -2,15 +2,16 @@ import React, { useEffect, useState } from "react";
 import moment from "moment";
 import { FaThumbsUp } from "react-icons/fa";
 import { useSelector } from "react-redux";
-const Comment = ({ comment, onLike }) => {
+import { Textarea , Button } from "flowbite-react";
+const Comment = ({ comment, onLike ,onEdit  }) => {
   const [user, setUser] = useState({});
+  const[isEditing,setIsEditing]=useState();
+  const[editedContent,setEditedContent]=useState(comment.content);
   const { currentUser } = useSelector((state) => state.user);
   useEffect(() => {
     const getUser = async () => {
       try {
-        console.log(comment?.userId);
         const res = await fetch(`/api/user/${comment?.userId}`);
-        console.log(res);
         const data = await res.json();
         if (res.ok) {
           setUser(data);
@@ -21,6 +22,31 @@ const Comment = ({ comment, onLike }) => {
     };
     getUser();
   }, [comment]);
+
+  const handleEdit=()=>{
+    setIsEditing(true);
+    setEditedContent(comment.content)
+  }
+const handleSave= async()=>{
+try {
+  const res = await fetch(`/api/editcomment/${comment._id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      content: editedContent,
+    }),
+  });
+  if (res.ok) {
+    setIsEditing(false);
+    onEdit(comment, editedContent);
+  }
+} catch (error) {
+  console.log(error.message)
+}
+}
+
   return !user? "No any comment":(
     <div className="flex p-4 border-b dark:border-gray-600 text-sm">
       <div className="flex-shrink-0 mr-3">
@@ -39,6 +65,35 @@ const Comment = ({ comment, onLike }) => {
             {moment(comment?.createdAt).fromNow()}
           </span>
         </div>
+        {isEditing?(
+          <>
+            <Textarea
+              className='mb-2'
+              value={editedContent}
+              onChange={(e) => setEditedContent(e.target.value)}
+            />
+            <div className='flex justify-end gap-2 text-xs'>
+              <Button
+                type='button'
+                size='sm'
+                gradientDuoTone='purpleToBlue'
+                onClick={handleSave}
+              >
+                Save
+              </Button>
+              <Button
+                type='button'
+                size='sm'
+                gradientDuoTone='purpleToBlue'
+                outline
+                onClick={() => setIsEditing(false)}
+              >
+                Cancel
+              </Button>
+            </div>
+          </>
+        ):(
+          <>
         <span className="text-gray-500 pb-2">{comment?.content}</span>
         <div className="flex items-center pt-2 text-xs border-t dark:border-gray-700 max-w-fit gap-2">
           <button
@@ -57,8 +112,13 @@ const Comment = ({ comment, onLike }) => {
                   comment?.numberOfLikes +
                     ' ' +
                     (comment?.numberOfLikes === 1 ? 'like' : 'likes')}
-              </p>
+            </p>
+           {currentUser && (currentUser._id===comment.userId || currentUser.isAdmin ) && (
+            <button type="button" className="text-gray-400 hover:text-blue-500" onClick={handleEdit}>Edit</button>
+           )}   
         </div>
+        </>
+        )}
       </div>
     </div>
   );
