@@ -105,7 +105,7 @@ return (
 )
 })}
 </Table>
-{showMore && (<Button onClick={handleShowMore}  className='w-full self-center my-1 text-gray p-1 hover:underline ' color='gray'>Show More</Button>)}
+{showMore && (<button onClick={handleShowMore} className='w-full self-center rounded-xl bg-white text-red-500 hover:bg-blue-500 hover:text-white text-md  py-3 mt-1'>Show More</button>)}
 </>
      ) : (
     <p>You have no posts yet !</p>
