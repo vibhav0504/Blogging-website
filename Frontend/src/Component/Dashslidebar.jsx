@@ -1,6 +1,6 @@
 import { Sidebar } from "flowbite-react";
 import React from "react";
-import { HiAnnotation, HiArrowSmRight, HiDocumentText, HiOutlineUserGroup, HiUser } from "react-icons/hi";
+import { HiAnnotation, HiArrowSmRight, HiChartPie, HiDocumentText, HiOutlineUserGroup, HiUser } from "react-icons/hi";
 import { useState , useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { signOutSuccess } from "../redux/User/userSlice";
@@ -37,8 +37,13 @@ const Dashslidebar = () => {
     <Sidebar className="w-full md:w-56">
       <Sidebar.Items>
         <Sidebar.ItemGroup className="flex flex-col gap-4">
+        {currentUser.isAdmin && <Link to="/dashboard?tab=dash">
+          <Sidebar.Item active={tab==="dash"} icon={HiChartPie} as="div">
+            DashBoard
+          </Sidebar.Item>
+          </Link>}
         <Link to="/dashboard?tab=profile">
-          <Sidebar.Item active={tab==="profile"} icon={HiUser} label={currentUser.isAdmin?"Admin":"User"} labelColor="dark" as="div">
+          <Sidebar.Item active={tab==="profile" ||!tab}  icon={HiUser} label={currentUser.isAdmin?"Admin":"User"} labelColor="dark" as="div">
             Profile
           </Sidebar.Item>
           </Link>
@@ -57,6 +62,7 @@ const Dashslidebar = () => {
             Comments
           </Sidebar.Item>
           </Link>}
+       
           <Sidebar.Item  icon={HiArrowSmRight} className="cursor-pointer" onClick={handleSignOut}>
             Sign-Out
           </Sidebar.Item>
