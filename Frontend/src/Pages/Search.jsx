@@ -93,7 +93,6 @@ if(e.target.id==="category"){
         }
     }
   }
-  console.log(sideBarData);
   return (
     <div className="flex flex-col md:flex-row">
       <div className="p-7 border-b md:border-r md:min-h-screen border-gray-500">

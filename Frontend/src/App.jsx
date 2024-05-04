@@ -6,7 +6,6 @@ import About from './Pages/About'
 import Signin from './Pages/Signin'
 import Signup from './Pages/Signup'
 import Dashboard from './Pages/Dashboard'
-import Projects from './Pages/Projects'
 import Header from './Component/Header'
 import  Footer from './Component/Footer'
 import Privateroute from './Component/Privateroute'
@@ -35,7 +34,6 @@ const App = () => {
         <Route  path="/create-post" element={< CreatePost/>}/>
         <Route  path="/update-post/:postId" element={< UpdatePost/>}/>
         </Route>
-        <Route  path="/project" element={< Projects/>}/>
         <Route  path="/post/:postSlug" element={<PostPage />}/>
       </Routes>
     <Footer/>
