@@ -112,9 +112,9 @@ if(e.target.id==="category"){
             <label className="font-semibold" >Category:</label>
             <select onChange={handleChange} value={sideBarData.category} id="category">
                 <option value="uncategorized">Uncategorized</option>
-                <option value="React">React</option>
-                <option value="next">Next js</option>
-                <option value="js">Js</option>
+                <option value="poems">poems</option>
+                <option value="stories">stories</option>
+                <option value="latest">latest </option>
             </select>
           </div>
           <Button type="submit" outline gradientDuoTone="purpleToPink">Apply Filters</Button>

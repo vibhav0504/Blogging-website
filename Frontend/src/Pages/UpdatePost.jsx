@@ -26,6 +26,7 @@ const UpdatePost = () => {
     try {
       const fetchPost = async () => {
         const res = await fetch(`/api/getposts?postId=${postId}`);
+        console.log(res)
         const data = await res.json();
         if (!res.ok) {
           console.log(data.message);
@@ -123,13 +124,13 @@ const UpdatePost = () => {
             }
             value={formData.category}
           >
-            <option value="uncategorized">Select a Category </option>
-            <option value="new Gadgets">new Gadgets </option>
-            <option value="Javascipt">Javascript </option>
-            <option value="React">React </option>
-            <option value="React-Native">React-Native </option>
-            <option value="Node js">Node js</option>
-            <option value="Politics">Politics</option>
+             <option value="uncategorized">Select a Category </option>
+            <option value="poems">Poem</option>
+            <option value="stories">Story</option>
+            <option value="politics">Politics</option>
+            <option value="latest">Latest Technologies</option>
+            <option value="react">React </option>
+            <option value="node js">Node js</option>
           </Select>
         </div>
         <div className="flex gap-4 justify-between items-center border-2 border-blue-300 border-dotted p-3 ">
@@ -138,7 +139,6 @@ const UpdatePost = () => {
             accept="image/*"
             onChange={(e) => setFile(e.target.files[0])}
           />
-
           <Button
             type="button"
             gradientDuoTone="purpleToBlue"

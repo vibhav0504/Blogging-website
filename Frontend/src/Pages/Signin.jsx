@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import {Link ,  useNavigate } from "react-router-dom"
-import { Label, TextInput , Button, Alert, Spinner } from "flowbite-react"
+import { Label , TextInput , Button , Alert , Spinner } from "flowbite-react"
 import { signInStart,signInSucess,signInFailure } from '../redux/User/userSlice'
 import { useDispatch , useSelector } from 'react-redux'
 import OAuth from '../Component/OAuth'
@@ -48,8 +48,9 @@ const handleSubmit=async(e)=>{
         <span className="rounded-lg text-pink-500 px-1  py-1 bg-gradient-to-r from-indigo-500 to-white">My</span>
         Blog
     </Link>
-    <p className='text-sm mt-5'>
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem inventore voluptates voluptate unde? Necessitatibus, magni, ea, sequi dignissimos at optio ducimus rem nesciunt ut modi mollitia ratione exercitationem tempore aliquam!
+    <p className='text-md mt-5 text-gray-400'>
+    Here you'll find a variety of articles and tutorials on  different topics You can use this site in dark mode too, so relax your eyes and enjoy the post ...Don't forget to drop your valuable feedbacks.
+          For making a comment , like You have to Sign Up .
     </p>
     </div>
     {/* For right */}

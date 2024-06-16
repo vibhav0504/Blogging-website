@@ -63,7 +63,7 @@ export const getPosts = async(req, res, next) => {
 };
  
 export const deletePost=async(req,res,next)=>{
-if(!req.user.isAdmin || req.user.id!==req.params.userId){
+if(!req.user.isAdmin){
   return next(errorHandler(403,"Not authorize to delete this post"))
 }
 try {
@@ -75,7 +75,7 @@ try {
 }
 
 export const updatePost=async(req,res,next)=>{
-  if(!req.user.isAdmin || req.user.id!==req.params.userId){
+  if(!req.user.isAdmin){
     return next(errorHandler(403,"Not authorize to update this post"))
   }
   try {

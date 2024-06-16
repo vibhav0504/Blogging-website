@@ -19,7 +19,7 @@ const CreatePost = () => {
   const [formData, setFormData] = useState({});
   const [file, setFile] = useState(null);
   const[publishError,setPublishError]=useState(null);
-  console.log(formData)
+  // console.log(formData)
   const handleUploadImage = async () => {
     try {
       if (!file) {
@@ -99,12 +99,12 @@ try {
           />
           <Select onChange={(e)=>setFormData({...formData,category:e.target.value})}>
             <option value="uncategorized">Select a Category </option>
-            <option value="new Gadgets">new Gadgets </option>
-            <option value="Javascipt">Javascript </option>
-            <option value="React">React </option>
-            <option value="React-Native">React-Native </option>
-            <option value="Node js">Node js</option>
-            <option value="Politics">Politics</option>
+            <option value="poems">Poem</option>
+            <option value="stories">Story</option>
+            <option value="politics">Politics</option>
+            <option value="latest">Latest Technologies</option>
+            <option value="react">React </option>
+            <option value="node js">Node js</option>
           </Select>
         </div>
         <div className="flex gap-4 justify-between items-center border-2 border-blue-300 border-dotted p-3 ">

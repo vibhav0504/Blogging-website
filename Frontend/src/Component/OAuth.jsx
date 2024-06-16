@@ -1,11 +1,11 @@
 import React from 'react'
 import { Button } from 'flowbite-react'
 import { AiFillGoogleCircle } from 'react-icons/ai'
-import {GoogleAuthProvider , getAuth, signInWithPopup} from "firebase/auth"
+import { GoogleAuthProvider , getAuth , signInWithPopup } from "firebase/auth"
 import { app } from '../firebase'
 import { useDispatch} from "react-redux"
 import { signInSucess } from '../redux/User/userSlice'
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 const OAuth = () => {
     const auth=getAuth(app);
@@ -33,8 +33,6 @@ const OAuth = () => {
          } catch (error) {
             console.log(error)
          }
-
-
     }
   return (
     <Button gradientDuoTone='pinkToOrange' type='button' outline onClick={handleGoogleClick}>
