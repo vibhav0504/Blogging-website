@@ -6,6 +6,7 @@ import authRoute from "./routes/auth.routes.js";
 import postRoute from "./routes/post.routes.js"
 import commentRoute from "./routes/comment.routes.js";
 import cookieParser from "cookie-parser";
+import path from "path";
 const app=express();
 mongoose.connect( process.env.CONNECTION_URL)
 .then(()=>{
@@ -16,6 +17,7 @@ mongoose.connect( process.env.CONNECTION_URL)
 }).catch((error)=>{
     console.log(error.message)
 })
+const __dirname = path.resolve();
 app.use(express.json());
 app.use(cookieParser())
 app.use("/api",userRoute);
